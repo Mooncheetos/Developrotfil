@@ -27,6 +27,14 @@ function Chart({ data }) {
 
   return <Line data={chartData} options={options} />;
 }
-
+// Валидация пропсов
+Chart.propTypes = {
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      wavelength: PropTypes.number.isRequired,
+      coefficient: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+};
 
 export default Chart;
