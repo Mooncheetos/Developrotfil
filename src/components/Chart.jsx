@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -27,5 +27,6 @@ function Chart({ data }) {
 
   return <Line data={chartData} options={options} />;
 }
+
 
 export default Chart;

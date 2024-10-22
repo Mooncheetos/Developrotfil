@@ -1,5 +1,4 @@
-import React from 'react';
-import Papa from 'papaparse';
+import PropTypes from 'prop-types';
 import parseFile from '../utils/parseFile';
 
 function FileUpload({ onFileData }) {
@@ -22,5 +21,9 @@ function FileUpload({ onFileData }) {
     </div>
   );
 }
+
+FileUpload.propTypes = {
+  onFileData: PropTypes.func.isRequired,
+};
 
 export default FileUpload;
