@@ -5,12 +5,9 @@ function parseFile(text) {
 
   lines.forEach((line) => {
     const trimmedLine = line.trim();
-
+    
     if (trimmedLine.match(/^Спектр\s*\d+/i)) {
-      currentSpectrum = {
-        name: trimmedLine,
-        data: []
-      };
+      currentSpectrum = { name: trimmedLine, data: [] };
       spectra.push(currentSpectrum);
     } else if (!isNaN(trimmedLine.split(',')[0])) {
       const [wavelength, coefficient] = trimmedLine.split(',').map(Number);
@@ -21,7 +18,8 @@ function parseFile(text) {
       }
     }
   });
-      return spectra.slice(0, 10);
+
+  return spectra.slice(0, 10); // Возвращаем максимум 10 спектров
 }
 
-    export default parseFile;
+export default parseFile;
