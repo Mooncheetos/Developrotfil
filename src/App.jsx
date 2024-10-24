@@ -1,19 +1,20 @@
-import { useState } from 'react';
 import FileUpload from './components/FileUpload';
 import Chart from './components/Chart';
+import { useState } from 'react'
+import './App.css';
 
 function App() {
-  const [spectraData, setSpectraData] = useState([]);
+  const [data, setData] = useState(null);
 
   const handleFileData = (parsedData) => {
-    setSpectraData(parsedData);
+    setData(parsedData);
   };
 
   return (
-    <div>
-      <h1>Оптичні властивості тонкоплівкових шарів</h1>
+    <div className="App">
+      <h1>Оптичні властивості тонких плівок</h1>
       <FileUpload onFileData={handleFileData} />
-      {spectraData.length > 0 && <Chart spectra={spectraData} />}
+      {data && <Chart data={data} />}
     </div>
   );
 }

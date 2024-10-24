@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';  // Для валидации пропсов
 import parseFile from '../utils/parseFile';
 
 function FileUpload({ onFileData }) {
@@ -22,6 +22,7 @@ function FileUpload({ onFileData }) {
   );
 }
 
+// Валидация пропсов
 FileUpload.propTypes = {
   onFileData: PropTypes.func.isRequired,
 };

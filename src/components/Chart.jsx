@@ -1,71 +1,40 @@
-import PropTypes from 'prop-types';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom'; // Импорт плагина
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin); // Регистрация плагина
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-function Chart({ spectra }) {
-  return (
-    <div>
-      {spectra.map((spectrum, index) => {
-        const chartData = {
-          labels: spectrum.data.map(d => d.wavelength),
-          datasets: [
-            {
-              label: spectrum.name,
-              data: spectrum.data.map(d => d.coefficient),
-              fill: false,
-              borderColor: 'rgb(75, 192, 192)',
-              tension: 0.1,
-            },
-          ],
-        };
+import PropTypes from 'prop-types';
 
-        const options = {
-          scales: {
-            x: { title: { display: true, text: 'Довжина хвилі (нм)' } },
-            y: { title: { display: true, text: 'Коефіцієнт (%)' }, min: 0, max: 100 },
-          },
-          plugins: {
-            zoom: {
-              pan: {
-                enabled: true,
-                mode: 'x',
-              },
-              zoom: {
-                enabled: true,
-                mode: 'x',
-                wheel: {
-                  enabled: true,
-                },
-              },
-            },
-          },
-        };
+function Chart({ data }) {
+  const chartData = {
+    labels: data.map(d => d.wavelength),
+    datasets: [
+      {
+        label: 'Коефіцієнт',
+        data: data.map(d => d.coefficient),
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+      },
+    ],
+  };
 
-        return (
-          <div key={index}>
-            <h3>{spectrum.name}</h3>
-            <Line data={chartData} options={options} />
-          </div>
-        );
-      })}
-    </div>
-  );
+  const options = {
+    scales: {
+      x: { title: { display: true, text: 'Довжина хвилі (нм)' } },
+      y: { title: { display: true, text: 'Коефіцієнт (%)' }, min: 0, max: 100 },
+    },
+  };
+
+  return <Line data={chartData} options={options} />;
 }
-    
-// Валидация пропсов
+
+// Добавь валидацию пропсов
 Chart.propTypes = {
-  spectra: PropTypes.arrayOf(
+  data: PropTypes.arrayOf(
     PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      data: PropTypes.arrayOf(
-        PropTypes.shape({
-          wavelength: PropTypes.number.isRequired,
-          coefficient: PropTypes.number.isRequired,
-        })
-      ).isRequired,
+      wavelength: PropTypes.number.isRequired,
+      coefficient: PropTypes.number.isRequired,
     })
   ).isRequired,
 };
