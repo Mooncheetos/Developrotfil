@@ -1,0 +1,18 @@
+/* Основной контейнер для загрузки файла */
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Стиль для метки с именем файла */
+.file-name {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+/* Стиль для кнопки выбора файла */
+.file-input {
+  margin: 1rem 0;
+}
