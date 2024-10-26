@@ -1,13 +1,39 @@
-/* Центрирование контейнера всей страницы */
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+/* Контейнер для приветственной страницы */
 .welcome-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(to right, #a78bfa, #60a5fa);
-  text-align: center;
   color: #ffffff;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Полноэкранное фоновое видео */
+.welcome-container video {
+  position: fixed; /* Закреплено по экрану */
+  top: 0;
+  left: 0;
+  width: 100vw; /* Полная ширина экрана */
+  height: 100vh; /* Полная высота экрана */
+  object-fit: cover;
+  z-index: -1; /* Позади контента */
+}
+
+/* Контент поверх видео */
+.welcome-content {
+  position: relative;
+  z-index: 1; /* Поверх видео */
+  padding: 2rem;
 }
 
 /* Стиль для заголовка */
@@ -17,7 +43,7 @@
   margin-bottom: 1.5rem;
 }
 
-/* Стиль для текста под заголовком */
+/* Стиль для подзаголовка */
 .welcome-subtitle {
   font-size: 1.25rem;
   margin-bottom: 1.5rem;
