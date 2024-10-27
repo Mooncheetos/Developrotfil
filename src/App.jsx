@@ -5,6 +5,7 @@ import FileUpload from './components/FileUpload';
 import Chart from './components/Chart';
 import Header from './components/Header';
 import './App.css';
+import './styles/FileUpload.css'; // Подключение стилей для загрузки файла
 
 function App() {
   const [data, setData] = useState(null);
@@ -16,7 +17,7 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <Header /> {/* Добавлен Header */}
+        <Header />
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route
