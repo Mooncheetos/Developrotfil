@@ -1,9 +1,10 @@
 import { Line } from 'react-chartjs-2';
 import '../styles/Chart.css';
+import zoomPlugin from 'chartjs-plugin-zoom';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import PropTypes from 'prop-types';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
 
 function Chart({ data }) {
   const chartData = {
@@ -19,14 +20,56 @@ function Chart({ data }) {
     ],
   };
 
-  const options = {
-    maintainAspectRatio: false, // Уменьшение графика для адаптивности
-    responsive: true,
-    scales: {
-      x: { title: { display: true, text: 'Довжина хвилі (нм)' } },
-      y: { title: { display: true, text: 'Коефіцієнт (%)' }, min: 0, max: 100 },
+  const axisTitleStyle = {
+  display: true,
+  color: '#ffffff',
+  font: {
+    size: 16,
+    weight: 'bold',
+  },
+};
+
+const tickStyle = {
+  color: '#ffffff',
+};
+
+const legendStyle = {
+  labels: {
+    color: '#ffffff',
+    font: {
+      size: 14,
+      weight: '500',
     },
-  };
+  },
+};
+
+const options = {
+  maintainAspectRatio: false,
+  responsive: true,
+  scales: {
+    x: {
+      title: { ...axisTitleStyle, text: 'Довжина хвилі (нм)' },
+      ticks: tickStyle,
+    },
+    y: {
+      title: { ...axisTitleStyle, text: 'Коефіцієнт (%)' },
+      ticks: tickStyle,
+      min: 0,
+      max: 100,
+    },
+  },
+  plugins: {
+    legend: legendStyle,
+    zoom: {
+      pan: { enabled: true, mode: 'x' },
+      zoom: {
+        wheel: { enabled: true },
+        pinch: { enabled: true },
+        mode: 'x',
+      },
+    },
+  },
+};
 
   return (
     <div className="chart-container">

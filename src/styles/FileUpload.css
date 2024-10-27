@@ -6,7 +6,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-image: url('/fon_fiz.jpg'); /* Путь к фону */
+  background-image: url('public/rabochii-stol-minimalizm.jpg'); /* Путь к фону */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
