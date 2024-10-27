@@ -5,6 +5,7 @@ import '../styles/FileUpload.css';
 
 function FileUpload({ onFileData }) {
   const [fileName, setFileName] = useState("Файл не вибрано");
+  const [inputKey, setInputKey] = useState(Date.now()); // Уникальный ключ для input
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -23,12 +24,14 @@ function FileUpload({ onFileData }) {
   const handleReset = () => {
     setFileName("Файл не вибрано");
     onFileData(null); // Передаем пустое значение для сброса графика
+    setInputKey(Date.now()); // Обновляем ключ для сброса input
   };
 
   return (
     <div className="file-upload-container">
       <label htmlFor="file-upload" className="file-label">{fileName}</label>
       <input 
+        key={inputKey}
         id="file-upload" 
         type="file" 
         accept=".txt" 
