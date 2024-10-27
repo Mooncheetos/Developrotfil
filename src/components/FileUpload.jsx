@@ -20,10 +20,26 @@ function FileUpload({ onFileData }) {
     }
   };
 
+  const handleReset = () => {
+    setFileName("Файл не вибрано");
+    onFileData(null); // Передаем пустое значение для сброса графика
+  };
+
   return (
     <div className="file-upload-container">
-      <label className="file-name">{fileName}</label>
-      <input type="file" accept=".txt" onChange={handleFileChange} className="file-input" />
+      <label htmlFor="file-upload" className="file-label">{fileName}</label>
+      <input 
+        id="file-upload" 
+        type="file" 
+        accept=".txt" 
+        onChange={handleFileChange} 
+        className="file-input" 
+      />
+      {fileName !== "Файл не вибрано" && (
+        <button className="reset-button" onClick={handleReset}>
+          Очистить график
+        </button>
+      )}
     </div>
   );
 }

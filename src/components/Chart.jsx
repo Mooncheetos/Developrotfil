@@ -1,9 +1,9 @@
 import { Line } from 'react-chartjs-2';
+import '../styles/Chart.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import PropTypes from 'prop-types';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-import PropTypes from 'prop-types';
 
 function Chart({ data }) {
   const chartData = {
@@ -20,16 +20,21 @@ function Chart({ data }) {
   };
 
   const options = {
+    maintainAspectRatio: false, // Уменьшение графика для адаптивности
+    responsive: true,
     scales: {
       x: { title: { display: true, text: 'Довжина хвилі (нм)' } },
       y: { title: { display: true, text: 'Коефіцієнт (%)' }, min: 0, max: 100 },
     },
   };
 
-  return <Line data={chartData} options={options} />;
+  return (
+    <div className="chart-container">
+      <Line data={chartData} options={options} />
+    </div>
+  );
 }
 
-// Добавь валидацию пропсов
 Chart.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({

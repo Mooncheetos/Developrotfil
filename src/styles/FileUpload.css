@@ -29,5 +29,36 @@
 
 /* Стиль для кнопки выбора файла */
 .file-input {
-  margin: 1rem 0;
+  display: none; /* Скрыть стандартную кнопку загрузки */
+}
+
+.file-upload-container label {
+  background-color: #ffffff;
+  color: #6d28d9;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.file-upload-container label:hover {
+  background-color: #d8b4fe;
+}
+
+/* Стиль для кнопки сброса */
+.reset-button {
+  background-color: #ffffff;
+  color: #e53e3e; /* Красный цвет для визуального различия */
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+  background-color: #fc8181;
 }
