@@ -5,13 +5,21 @@ import FileUpload from './components/FileUpload';
 import Chart from './components/Chart';
 import Header from './components/Header';
 import './App.css';
-import './styles/FileUpload.css'; // Подключение стилей для загрузки файла
+import './styles/FileUpload.css';
 
 function App() {
   const [data, setData] = useState(null);
+  const [showSpectrumButton, setShowSpectrumButton] = useState(false);
+  const [showChart, setShowChart] = useState(false);
 
   const handleFileData = (parsedData) => {
     setData(parsedData);
+    setShowSpectrumButton(true); // Показываем кнопку "Выбрать спектр"
+    setShowChart(false); // Скрываем график, пока не нажата кнопка "Выбрать спектр"
+  };
+
+  const handleShowChart = () => {
+    setShowChart(true); // Показываем график только после нажатия кнопки
   };
 
   return (
@@ -26,7 +34,12 @@ function App() {
               <div className="upload-page">
                 <h1>Оптичні властивості тонких плівок</h1>
                 <FileUpload onFileData={handleFileData} />
-                {data && <Chart data={data} />}
+                {showSpectrumButton && (
+                  <button className="spectrum-button" onClick={handleShowChart}>
+                    Выбрать спектр
+                  </button>
+                )}
+                {showChart && data && <Chart data={data} />}
               </div>
             }
           />
