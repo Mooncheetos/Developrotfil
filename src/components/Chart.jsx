@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
 
 function Chart({ data }) {
+  if (!Array.isArray(data)) return null;
+
   const chartData = {
     labels: data.map(d => d.wavelength),
     datasets: [

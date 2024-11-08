@@ -1,0 +1,43 @@
+/* SpectrumSelector.css */
+
+.spectrum-selector {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.spectrum-selector h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.spectrum-selector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.spectrum-selector input[type='radio'] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.spectrum-button {
+  background-color: #ffffff;
+  color: #6d28d9;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 1rem;
+}
+
+.spectrum-button:hover {
+  background-color: #d8b4fe;
+  transform: scale(1.05);
+}

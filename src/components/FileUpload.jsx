@@ -4,8 +4,8 @@ import { useState } from 'react';
 import '../styles/FileUpload.css';
 
 function FileUpload({ onFileData }) {
-  const [fileName, setFileName] = useState("Файл не вибрано");
-  const [inputKey, setInputKey] = useState(Date.now()); // Уникальный ключ для input
+  const [fileName, setFileName] = useState("Файл не выбран");
+  const [inputKey, setInputKey] = useState(Date.now());
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -13,18 +13,28 @@ function FileUpload({ onFileData }) {
       setFileName(file.name);
       const reader = new FileReader();
       reader.onload = (e) => {
-        const text = e.target.result;
+        const buffer = e.target.result;
+        let text = new TextDecoder("utf-8").decode(buffer);
+
+        // Проверка кириллицы, если не распознана, попробуем Windows-1251
+        if (!/[А-Яа-яЁё]/.test(text)) {
+          text = new TextDecoder("windows-1251").decode(buffer);
+        }
+
+        console.log("Decoded File Content:", text);
+
         const parsedData = parseFile(text);
+        console.log("Parsed data:", parsedData); // Лог перед передачей данных
         onFileData(parsedData);
       };
-      reader.readAsText(file);
+      reader.readAsArrayBuffer(file);
     }
   };
 
   const handleReset = () => {
-    setFileName("Файл не вибрано");
-    onFileData(null); // Передаем пустое значение для сброса графика
-    setInputKey(Date.now()); // Обновляем ключ для сброса input
+    setFileName("Файл не выбран");
+    onFileData(null);
+    setInputKey(Date.now());
   };
 
   return (
@@ -38,7 +48,7 @@ function FileUpload({ onFileData }) {
         onChange={handleFileChange} 
         className="file-input" 
       />
-      {fileName !== "Файл не вибрано" && (
+      {fileName !== "Файл не выбран" && (
         <button className="reset-button" onClick={handleReset}>
           Очистить график
         </button>

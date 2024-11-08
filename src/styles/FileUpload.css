@@ -28,6 +28,16 @@
   background-color: #d8b4fe;
 }
 
+.spectrum-selector {
+  margin-top: 1rem;
+  color: #ffffff;
+}
+
+.spectrum-selector label {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
 /* Основной контейнер для загрузки файла */
 .file-upload-container {
   display: flex;

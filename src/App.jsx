@@ -5,21 +5,22 @@ import FileUpload from './components/FileUpload';
 import Chart from './components/Chart';
 import Header from './components/Header';
 import './App.css';
-import './styles/FileUpload.css';
 
 function App() {
-  const [data, setData] = useState(null);
-  const [showSpectrumButton, setShowSpectrumButton] = useState(false);
-  const [showChart, setShowChart] = useState(false);
+  const [spectra, setSpectra] = useState([]);
+  const [selectedData, setSelectedData] = useState(null);
 
   const handleFileData = (parsedData) => {
-    setData(parsedData);
-    setShowSpectrumButton(true); // Показываем кнопку "Выбрать спектр"
-    setShowChart(false); // Скрываем график, пока не нажата кнопка "Выбрать спектр"
+    setSpectra(parsedData);
+    setSelectedData(null);
   };
 
-  const handleShowChart = () => {
-    setShowChart(true); // Показываем график только после нажатия кнопки
+  const handleSpectrumSelect = (e) => {
+    const spectrumName = e.target.value;
+    const spectrum = spectra.find(s => s.name === spectrumName);
+    if (spectrum) {
+      setSelectedData(spectrum.data);
+    }
   };
 
   return (
@@ -34,12 +35,17 @@ function App() {
               <div className="upload-page">
                 <h1>Оптичні властивості тонких плівок</h1>
                 <FileUpload onFileData={handleFileData} />
-                {showSpectrumButton && (
-                  <button className="spectrum-button" onClick={handleShowChart}>
-                    Выбрать спектр
-                  </button>
+                {spectra.length > 0 && (
+                  <select onChange={handleSpectrumSelect}>
+                    <option value="">Выберите спектр</option>
+                    {spectra.map((spectrum) => (
+                      <option key={spectrum.name} value={spectrum.name}>
+                        {spectrum.name}
+                      </option>
+                    ))}
+                  </select>
                 )}
-                {showChart && data && <Chart data={data} />}
+                {selectedData && <Chart data={selectedData} />}
               </div>
             }
           />
