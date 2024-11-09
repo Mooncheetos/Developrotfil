@@ -10,7 +10,7 @@ function SpectrumSelector({ spectra, onSelectSpectrum }) {
 
   return (
     <select className="spectrum-selector" onChange={handleSelectChange} defaultValue="">
-      <option value="">Выберите спектр</option>
+      <option value="">Виберіть спектр</option>
       {spectra.map((spectrum, index) => (
         <option key={index} value={spectrum.name} className="spectrum-option">
           {spectrum.name}

@@ -49,7 +49,7 @@ function App() {
                     <SpectrumSelector spectra={spectra} onSelectSpectrum={handleSpectrumSelect} />
                     {showResetButton && (
                       <button className="reset-button" onClick={handleReset}>
-                        Очистить график
+                        Очистити графік
                       </button>
                     )}
                   </>

@@ -89,7 +89,7 @@ function Chart({ data }) {
   return (
     <div className="chart-container">
       <Line ref={chartRef} data={chartData} options={options} />
-      <button onClick={handleResetZoom}>Сбросить масштаб</button>
+      <button onClick={handleResetZoom}>Скинути масштаб</button>
     </div>
   );
 }

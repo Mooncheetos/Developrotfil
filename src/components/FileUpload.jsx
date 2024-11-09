@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import '../styles/FileUpload.css';
 
 function FileUpload({ onFileData, resetTrigger }) {
-  const [fileName, setFileName] = useState("Файл не выбран");
+  const [fileName, setFileName] = useState("Файл не вибраний");
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (resetTrigger && fileInputRef.current) {
       fileInputRef.current.value = "";
-      setFileName("Файл не выбран");
+      setFileName("Файл не вибраний");
     }
   }, [resetTrigger]);
 
