@@ -1,41 +1,27 @@
 import PropTypes from 'prop-types';
 
 function SpectrumSelector({ spectra, onSelectSpectrum }) {
-  const handleSelect = (e) => {
-    const selectedIndex = parseInt(e.target.value, 10);
-    onSelectSpectrum(spectra[selectedIndex]);
+  const handleSelectChange = (event) => {
+    const selectedSpectrum = spectra.find(
+      (spectrum) => spectrum.name === event.target.value
+    );
+    onSelectSpectrum(selectedSpectrum);
   };
 
   return (
-    <div className="spectrum-selector">
-      <h3>Выберите спектр:</h3>
+    <select className="spectrum-selector" onChange={handleSelectChange} defaultValue="">
+      <option value="">Выберите спектр</option>
       {spectra.map((spectrum, index) => (
-        <div key={index}>
-          <input
-            type="radio"
-            name="spectrum"
-            value={index}
-            onChange={handleSelect}
-          />
-          <label>{spectrum.name}</label>
-        </div>
+        <option key={index} value={spectrum.name} className="spectrum-option">
+          {spectrum.name}
+        </option>
       ))}
-    </div>
+    </select>
   );
 }
 
 SpectrumSelector.propTypes = {
-  spectra: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      data: PropTypes.arrayOf(
-        PropTypes.shape({
-          wavelength: PropTypes.number,
-          coefficient: PropTypes.number,
-        })
-      ),
-    })
-  ).isRequired,
+  spectra: PropTypes.array.isRequired,
   onSelectSpectrum: PropTypes.func.isRequired,
 };
 

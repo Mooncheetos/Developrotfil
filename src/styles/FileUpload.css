@@ -13,7 +13,7 @@
   color: #ffffff;
 }
 
-.spectrum-button {
+/* .spectrum-button {
   background-color: #ffffff;
   color: #6d28d9;
   padding: 0.75rem 1.5rem;
@@ -26,9 +26,9 @@
 
 .spectrum-button:hover {
   background-color: #d8b4fe;
-}
+} */
 
-.spectrum-selector {
+/* .spectrum-selector {
   margin-top: 1rem;
   color: #ffffff;
 }
@@ -36,7 +36,7 @@
 .spectrum-selector label {
   margin-left: 0.5rem;
   font-size: 1rem;
-}
+} */
 
 /* Основной контейнер для загрузки файла */
 .file-upload-container {
