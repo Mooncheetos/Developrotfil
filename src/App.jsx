@@ -6,6 +6,8 @@ import FileUpload from './components/FileUpload';
 import Chart from './components/Chart';
 import Header from './components/Header';
 import ThicknessCalculation from './components/ThicknessCalculation'; // Добавляем компонент для третьей страницы
+import BandGapCalculation from './components/BandGapCalculation';
+import { AppProvider } from './AppContext';
 import '../src/styles/SpectrumSelector.css';
 import './App.css';
 
@@ -34,6 +36,7 @@ function App() {
   };
 
   return (
+    <AppProvider>
     <Router>
       <div className="app-container">
         <Header />
@@ -68,10 +71,15 @@ function App() {
                 {spectra.length > 0 && <ThicknessCalculation spectra={spectra} />}
               </div>
             }
-          />
+            />
+            <Route
+              path="/bandgap"
+              element={<BandGapCalculation spectra={spectra} />} // Добавлена четвертая страница
+            />
         </Routes>
       </div>
-    </Router>
+      </Router>
+      </AppProvider>
   );
 }
 

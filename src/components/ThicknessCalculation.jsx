@@ -1,32 +1,32 @@
 // src/components/ThicknessCalculation.jsx
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import findExtrema from '../utils/findExtrema';
 import calculateThickness from '../utils/calculateThickness';
 import SpectrumSelector from './SpectrumSelector';
+import { AppContext } from '../AppContext';
 
 function ThicknessCalculation({ spectra }) {
-  const [selectedSpectrum, setSelectedSpectrum] = useState(null);
-  const [thickness, setThickness] = useState(null);
+  const { setThickness, setSelectedSpectrum } = useContext(AppContext); // Сохраняем спектр и толщину в контексте
+  const [localThickness, setLocalThickness] = useState(null);
 
   const handleSpectrumSelect = (spectrum) => {
-    setSelectedSpectrum(spectrum);
-
-    // Находим экстремумы и вычисляем толщину
+    setSelectedSpectrum(spectrum); // Сохраняем выбранный спектр в контексте
     const extrema = findExtrema(spectrum.data);
     const calculatedThickness = calculateThickness(extrema);
-    setThickness(calculatedThickness);
+    setLocalThickness(calculatedThickness);
+    setThickness(calculatedThickness); // Сохраняем толщину в контексте
   };
 
   return (
     <div className="thickness-calculation">
       <h2>Расчеты толщины образца</h2>
       <SpectrumSelector spectra={spectra} onSelectSpectrum={handleSpectrumSelect} />
-      
-      {selectedSpectrum && (
+
+      {localThickness && (
         <>
           <h3>Расчёт толщины слоя</h3>
-          <p>Толщина слоя: {thickness ? `${thickness.toFixed(2)} нм` : "Недостаточно данных для расчёта"}</p>
+          <p>Толщина слоя: {localThickness.toFixed(2)} нм</p>
         </>
       )}
     </div>
