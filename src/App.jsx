@@ -7,6 +7,7 @@ import Chart from './components/Chart';
 import Header from './components/Header';
 import ThicknessCalculation from './components/ThicknessCalculation'; // Добавляем компонент для третьей страницы
 import BandGapCalculation from './components/BandGapCalculation';
+import RefractiveIndexCalculation from './components/RefractiveIndexCalculation';
 import { AppProvider } from './AppContext';
 import '../src/styles/SpectrumSelector.css';
 import './App.css';
@@ -74,8 +75,12 @@ function App() {
             />
             <Route
               path="/bandgap"
-              element={<BandGapCalculation spectra={spectra} />} // Добавлена четвертая страница
+              element={<BandGapCalculation spectra={spectra} />}
             />
+            <Route
+    path="/refractive-index"
+    element={<RefractiveIndexCalculation spectra={spectra} />}
+  />
         </Routes>
       </div>
       </Router>
