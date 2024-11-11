@@ -5,6 +5,7 @@ import SpectrumSelector from './components/SpectrumSelector';
 import FileUpload from './components/FileUpload';
 import Chart from './components/Chart';
 import Header from './components/Header';
+import ThicknessCalculation from './components/ThicknessCalculation'; // Добавляем компонент для третьей страницы
 import '../src/styles/SpectrumSelector.css';
 import './App.css';
 
@@ -55,6 +56,16 @@ function App() {
                   </>
                 )}
                 {selectedData && <Chart data={selectedData} />}
+              </div>
+            }
+          />
+          <Route
+            path="/thickness"
+            element={
+              <div className="thickness-page">
+                <h1>Расчеты толщины образца</h1>
+                <FileUpload onFileData={handleFileData} resetTrigger={resetTrigger} />
+                {spectra.length > 0 && <ThicknessCalculation spectra={spectra} />}
               </div>
             }
           />

@@ -8,6 +8,8 @@ function Header() {
         <Link to="/" className="nav-link">Головна</Link>
         <span className="nav-divider">|</span>
         <Link to="/upload" className="nav-link">Графік</Link>
+        <span className="nav-divider">|</span>
+        <Link to="/thickness" className="nav-link">Розрахунок товщини</Link>
       </nav>
     </header>
   );

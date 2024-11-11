@@ -76,11 +76,11 @@ function Chart({ data }) {
       zoom: {
         pan: { enabled: true, mode: 'x' },
         zoom: {
-          wheel: { enabled: true },
-          pinch: { enabled: true },
-          mode: 'x',
-          rangeMin: { x: 400, y: 0 },
-          rangeMax: { x: 1100, y: 100 },
+          // wheel: { enabled: true },
+          // pinch: { enabled: true },
+          // mode: 'x',
+          // rangeMin: { x: 400, y: 0 },
+          // rangeMax: { x: 1100, y: 100 },
         },
       },
     },

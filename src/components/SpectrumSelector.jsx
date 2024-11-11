@@ -11,7 +11,7 @@ function SpectrumSelector({ spectra, onSelectSpectrum }) {
   return (
     <select className="spectrum-selector" onChange={handleSelectChange} defaultValue="">
       <option value="">Виберіть спектр</option>
-      {spectra.map((spectrum, index) => (
+      {(spectra || []).map((spectrum, index) => (
         <option key={index} value={spectrum.name} className="spectrum-option">
           {spectrum.name}
         </option>
@@ -19,6 +19,7 @@ function SpectrumSelector({ spectra, onSelectSpectrum }) {
     </select>
   );
 }
+
 
 SpectrumSelector.propTypes = {
   spectra: PropTypes.array.isRequired,

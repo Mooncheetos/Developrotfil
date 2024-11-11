@@ -8,6 +8,11 @@
   text-align: center;
 }
 
+.scrollable-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 /* Контейнер для приветственной страницы */
 .welcome-container {
   display: flex;
