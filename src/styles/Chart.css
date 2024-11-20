@@ -1,6 +1,31 @@
 .chart-container {
-  width: 80%; /* Ширина графика */
-  max-width: 2000px; /* Максимальная ширина */
-  height: 500px; /* Уменьшенная высота для удобства */
+  width: 100%; /* Установить 100% для адаптивности */
+  max-width: 1000px; /* Ограничение ширины */
+  height: 500px; /* Высота */
   margin: 0 auto;
+  overflow-x: auto; /* Горизонтальный скроллинг */
+}
+.points-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.points-table th,
+.points-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.points-table th {
+  background-color: #f4f4f4;
+}
+
+.material-selector {
+  margin-bottom: 10px;
+}
+
+.min-point-input {
+  margin-bottom: 10px;
 }

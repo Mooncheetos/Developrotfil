@@ -1,0 +1,33 @@
+/* Единый стиль кнопок */
+.button {
+  background-color: #ffffff; /* Белый фон */
+  color: #6d28d9; /* Фиолетовый текст */
+  padding: 0.75rem 1.5rem; /* Отступы */
+  border: none; /* Без границ */
+  border-radius: 9999px; /* Закругленные края */
+  text-decoration: none; /* Убираем подчеркивание */
+  font-size: 1rem; /* Размер текста */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin: 10px; /* Расстояние между кнопками */
+}
+
+.button:hover {
+  background-color: #d8b4fe; /* Светло-фиолетовый фон на ховере */
+  transform: scale(1.05); /* Легкое увеличение */
+}
+
+/* Стили для кнопки в таблице выбора материалов */
+.select-menu {
+  width: 200px;
+  height: 40px;
+  border: 1px solid #6d28d9; /* Фиолетовая рамка */
+  border-radius: 9999px;
+  padding: 0 10px;
+  font-size: 1rem;
+  color: #6d28d9;
+}
+
+.select-menu:hover {
+  background-color: #f3e8ff; /* Легкий фиолетовый оттенок */
+}

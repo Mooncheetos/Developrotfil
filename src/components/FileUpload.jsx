@@ -3,6 +3,7 @@ import parseFile from '../utils/parseFile';
 import { useState, useEffect, useRef } from 'react';
 import '../styles/FileUpload.css';
 
+
 function FileUpload({ onFileData, resetTrigger }) {
   const [fileName, setFileName] = useState("Файл не вибраний");
   const fileInputRef = useRef(null);
