@@ -15,7 +15,6 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 import '../styles/Chart.css';
 import "../styles/Buttons.css";
 
-
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
 
 function Chart({ data, selectedMaterial, setSelectedMaterial }) {
@@ -97,23 +96,24 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
   };
 
   const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    onClick: (event) => {
-      const chart = chartRef.current;
-      if (!chart) return;
+  responsive: true,
+  maintainAspectRatio: false,
+  // Исправляем обработчик кликов
+  onClick: (event, elements, chart) => {
+    if (!chartRef.current) return; // Проверяем, что ссылка на график существует
 
-      const points = chart.getElementsAtEventForMode(event.nativeEvent, 'nearest', { intersect: true }, false);
-      if (points.length > 0) {
-        const { index } = points[0];
-        addPoint(data[index]);
-      }
-    },
-    scales: {
-      x: { title: { display: true, text: 'Довжина хвилі (нм)' }, ticks: { min: 400, max: 1100 } },
-      y: { title: { display: true, text: 'Коефіцієнт (%)' }, ticks: { min: 0, max: 100 } },
-    },
-  };
+    // Получаем точки клика
+    const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+    if (points.length > 0) {
+      const { index } = points[0]; // Получаем индекс ближайшей точки
+      addPoint(data[index]); // Добавляем точку в список выбранных
+    }
+  },
+  scales: {
+    x: { title: { display: true, text: 'Довжина хвилі (нм)' }, ticks: { min: 400, max: 1100 } },
+    y: { title: { display: true, text: 'Коефіцієнт (%)' }, ticks: { min: 0, max: 100 } },
+  },
+};
 
   return (
     <div className="chart-container">
