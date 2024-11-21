@@ -69,7 +69,8 @@ function ThicknessCalculator({ data, selectedPoints, addPoint, removePoint, upda
         <button onClick={handleManualPointSubmit}>Додати</button>
       </div>
 
-      <table className="points-table">
+      <div className="center-container">
+        <table className="points-table">
         <thead>
           <tr>
             <th>Довжина хвилі (нм)</th>
@@ -111,6 +112,7 @@ function ThicknessCalculator({ data, selectedPoints, addPoint, removePoint, upda
           ))}
         </tbody>
       </table>
+      </div>      
 
       <button onClick={calculateThickness}>Розрахувати товщину</button>
 

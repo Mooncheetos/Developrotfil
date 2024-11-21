@@ -17,17 +17,70 @@
   transform: scale(1.05); /* Легкое увеличение */
 }
 
+.label-style {
+  /* display: block; */
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: bold;
+}
+
 /* Стили для кнопки в таблице выбора материалов */
 .select-menu {
-  width: 200px;
-  height: 40px;
-  border: 1px solid #6d28d9; /* Фиолетовая рамка */
-  border-radius: 9999px;
-  padding: 0 10px;
-  font-size: 1rem;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #ffffff;
   color: #6d28d9;
+  border: 2px solid #6d28d9;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .select-menu:hover {
+  background-color: #d8b4fe;
+  transform: scale(1.05); /* Легкий фиолетовый оттенок */
+}
+
+.input-style {
+  background-color: #ffffff;
+  color: #6d28d9;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #6d28d9; /* Добавляем границу */
+  border-radius: 9999px; /* Закругленные края */
+  font-size: 1rem;
+  width: 100%; /* Растягиваем на 100% */
+  max-width: 300px; /* Ограничиваем ширину */
+  box-sizing: border-box; /* Учитываем padding */
+  margin-bottom: 1rem; /* Отступ между элементами */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.input-style:focus {
+  outline: none; /* Убираем стандартное выделение */
+  box-shadow: 0 0 10px rgba(109, 40, 217, 0.5); /* Тень при фокусе */
+}
+
+.input-style:hover {
   background-color: #f3e8ff; /* Легкий фиолетовый оттенок */
+  transform: scale(1.05); /* Увеличение при наведении */
+}
+
+.reset-button {
+  background-color: #ffffff;
+  color: #e53e3e; /* Красный цвет для визуального различия */
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  border-radius: 9999px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reset-button:hover {
+  background-color: #fc8181;
 }

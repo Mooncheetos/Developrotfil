@@ -1,6 +1,6 @@
 .chart-container {
   width: 100%; /* Установить 100% для адаптивности */
-  max-width: 1000px; /* Ограничение ширины */
+  max-width: 1500px; /* Ограничение ширины */
   height: 500px; /* Высота */
   margin: 0 auto;
   overflow-x: auto; /* Горизонтальный скроллинг */

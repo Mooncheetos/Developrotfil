@@ -13,6 +13,7 @@ import {
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import '../styles/Chart.css';
+import "../styles/Buttons.css";
 
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
@@ -116,8 +117,8 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
 
   return (
     <div className="chart-container">
-      <label htmlFor="material">Оберіть матеріал:</label>
-      <select id="material" value={selectedMaterial} onChange={(e) => setSelectedMaterial(e.target.value)}>
+      <label htmlFor="material" className="label-style">Оберіть матеріал:</label>
+      <select id="material" className="select-menu" value={selectedMaterial} onChange={(e) => setSelectedMaterial(e.target.value)}>
         <option value="CdTe">CdTe</option>
         <option value="CdS">CdS</option>
         <option value="ZnO">ZnO</option>
@@ -125,11 +126,12 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
 
       <input
         type="number"
+        className="input-style"
         value={manualPoint}
         onChange={(e) => setManualPoint(e.target.value)}
         placeholder="Довжина хвилі"
       />
-      <button onClick={handleManualPointSubmit}>Додати точку</button>
+      <button className="button" onClick={handleManualPointSubmit}>Додати точку</button>
 
       <Line ref={chartRef} data={chartData} options={options} />
 
@@ -147,14 +149,14 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
               <td>{point.wavelength}</td>
               <td>{point.coefficient}</td>
               <td>
-                <button onClick={() => removePoint(point.wavelength)}>Видалити</button>
+                <button className="reset-button" onClick={() => removePoint(point.wavelength)}>Видалити</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <button onClick={handleCalculateThickness}>Розрахувати товщину</button>
+      <button className="button" onClick={handleCalculateThickness}>Розрахувати товщину</button>
 
       {averageThickness && <p>Середня товщина плівки: {averageThickness.toFixed(2)} нм</p>}
     </div>

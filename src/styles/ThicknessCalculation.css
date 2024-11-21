@@ -1,3 +1,23 @@
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 80%; /* Настройка ширины */
+  margin: 20px auto; /* Центрирование */
+  border: 1px solid #ccc;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #eef;
+  color: #333;
+}
+
 .points-table {
   width: 100%;
   border-collapse: collapse;

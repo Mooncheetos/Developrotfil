@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import "../styles/Buttons.css";
 
 function SpectrumSelector({ spectra, onSelectSpectrum }) {
   const handleSelectChange = (event) => {
@@ -9,7 +10,7 @@ function SpectrumSelector({ spectra, onSelectSpectrum }) {
   };
 
   return (
-    <select className="spectrum-selector" onChange={handleSelectChange} defaultValue="">
+    <select className="select-menu" onChange={handleSelectChange} defaultValue="">
       <option value="">Виберіть спектр</option>
       {(spectra || []).map((spectrum, index) => (
         <option key={index} value={spectrum.name} className="spectrum-option">

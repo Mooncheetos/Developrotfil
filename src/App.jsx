@@ -15,21 +15,25 @@ function App() {
   const [spectra, setSpectra] = useState([]);
   const [selectedData, setSelectedData] = useState(null);
   const [resetTrigger, setResetTrigger] = useState(false);
+  const [showResetButton, setShowResetButton] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState('CdTe');
 
   const handleFileData = (parsedData) => {
     setSpectra(parsedData);
     setSelectedData(null);
+    setShowResetButton(false);
   };
 
   const handleSpectrumSelect = (spectrum) => {
     setSelectedData(spectrum.data);
+    setShowResetButton(true);
   };
 
   const handleReset = () => {
     setSpectra([]);
     setSelectedData(null);
-    setResetTrigger((prev) => !prev);
+    setShowResetButton(false);
+    setResetTrigger(prev => !prev);
   };
 
   return (
@@ -48,6 +52,11 @@ function App() {
                   {spectra.length > 0 && (
                     <>
                       <SpectrumSelector spectra={spectra} onSelectSpectrum={handleSpectrumSelect} />
+                      {showResetButton && (
+                      <button className="reset-button" onClick={handleReset}>
+                        Очистити графік
+                      </button>
+                    )}
                       {selectedData && (
                         <Chart
                           data={selectedData}
