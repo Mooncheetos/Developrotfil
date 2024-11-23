@@ -5,6 +5,11 @@
   margin: 0 auto;
   overflow-x: auto; /* Горизонтальный скроллинг */
 }
+
+.chart-container {
+  margin-top: 2rem;
+}
+
 .points-table {
   width: 100%;
   border-collapse: collapse;

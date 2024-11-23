@@ -15,6 +15,7 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 import '../styles/Chart.css';
 import "../styles/Buttons.css";
 
+// Регистрация плагинов Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, zoomPlugin);
 
 function Chart({ data, selectedMaterial, setSelectedMaterial }) {
@@ -26,7 +27,7 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
   // Коэффициент преломления для материалов
   const getRefractiveIndex = (wavelength, material) => {
     const refractiveIndices = {
-      CdTe: (λ) => 2.5 + 0.01 * λ,
+      CdTe: (λ) => 0.000193 * λ + 2.586587,
       CdS: (λ) => 2.2 + 0.01 * λ,
       ZnO: (λ) => 2.0 + 0.01 * λ,
     };
@@ -83,6 +84,19 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
     setAverageThickness(average);
   };
 
+  // Обработчик кликов по графику
+  const handleChartClick = (event, elements, chart) => {
+    if (!chart) return;
+
+    // Используем метод Chart.js для получения ближайшей точки
+    const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+    if (points.length > 0) {
+      const { index } = points[0]; // Получаем индекс ближайшей точки
+      addPoint(data[index]); // Добавляем точку в таблицу
+    }
+  };
+
+  // Данные для графика
   const chartData = {
     labels: data.map((d) => d.wavelength),
     datasets: [
@@ -95,30 +109,21 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
     ],
   };
 
+  // Настройки графика
   const options = {
-  responsive: true,
-  maintainAspectRatio: false,
-  // Исправляем обработчик кликов
-  onClick: (event, elements, chart) => {
-    if (!chartRef.current) return; // Проверяем, что ссылка на график существует
-
-    // Получаем точки клика
-    const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
-    if (points.length > 0) {
-      const { index } = points[0]; // Получаем индекс ближайшей точки
-      addPoint(data[index]); // Добавляем точку в список выбранных
-    }
-  },
-  scales: {
-    x: { title: { display: true, text: 'Довжина хвилі (нм)' }, ticks: { min: 400, max: 1100 } },
-    y: { title: { display: true, text: 'Коефіцієнт (%)' }, ticks: { min: 0, max: 100 } },
-  },
-};
+    responsive: true,
+    maintainAspectRatio: false,
+    onClick: handleChartClick, // Обработчик кликов
+    scales: {
+      x: { title: { display: true, text: 'Довжина хвилі (нм)' }, ticks: { min: 400, max: 1100 } },
+      y: { title: { display: true, text: 'Коефіцієнт (%)' }, ticks: { min: 0, max: 100 } },
+    },
+  };
 
   return (
     <div className="chart-container">
       <label htmlFor="material" className="label-style">Оберіть матеріал:</label>
-      <select id="material" className="select-menu" value={selectedMaterial} onChange={(e) => setSelectedMaterial(e.target.value)}>
+      <select id="material" className="select-menu-mat" value={selectedMaterial} onChange={(e) => setSelectedMaterial(e.target.value)}>
         <option value="CdTe">CdTe</option>
         <option value="CdS">CdS</option>
         <option value="ZnO">ZnO</option>
@@ -156,7 +161,7 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
         </tbody>
       </table>
 
-      <button className="button" onClick={handleCalculateThickness}>Розрахувати товщину</button>
+      <button className="button-rozr" onClick={handleCalculateThickness}>Розрахувати товщину</button>
 
       {averageThickness && <p>Середня товщина плівки: {averageThickness.toFixed(2)} нм</p>}
     </div>

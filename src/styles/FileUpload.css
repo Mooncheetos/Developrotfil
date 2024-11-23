@@ -13,6 +13,11 @@
   color: #ffffff;
 }
 
+.upload-page-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
 /* .spectrum-button {
   background-color: #ffffff;
   color: #6d28d9;

@@ -37,16 +37,18 @@ function FileUpload({ onFileData, resetTrigger }) {
 
   return (
     <div className="file-upload-container">
-      <label htmlFor="file-upload" className="file-label">{fileName}</label>
-      <input         
-        id="file-upload" 
-        type="file"
-        ref={fileInputRef}
-        accept=".txt" 
-        onChange={handleFileChange} 
-        className="file-input" 
-      />      
-    </div>
+  <label htmlFor="file-upload" className="file-label">
+    {fileName}
+  </label>
+  <input
+    id="file-upload"
+    type="file"
+    ref={fileInputRef}
+    accept=".txt"
+    onChange={handleFileChange}
+    className="file-input"
+  />
+</div>
   );
 }
 

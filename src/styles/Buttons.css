@@ -17,6 +17,24 @@
   transform: scale(1.05); /* Легкое увеличение */
 }
 
+.button-rozr {
+  background-color: #ffffff; /* Белый фон */
+  color: #6d28d9; /* Фиолетовый текст */
+  padding: 0.75rem 1.5rem; /* Отступы */
+  border: none; /* Без границ */
+  border-radius: 9999px; /* Закругленные края */
+  text-decoration: none; /* Убираем подчеркивание */
+  font-size: 1rem; /* Размер текста */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin: 10px; /* Расстояние между кнопками */
+}
+
+.button-rozr:hover {
+  background-color: #d8b4fe; /* Светло-фиолетовый фон на ховере */
+  transform: scale(1.05); /* Легкое увеличение */
+}
+
 .label-style {
   /* display: block; */
   margin-bottom: 5px;
@@ -42,6 +60,26 @@
 }
 
 .select-menu:hover {
+  background-color: #d8b4fe;
+  transform: scale(1.05); /* Легкий фиолетовый оттенок */
+}
+
+.select-menu-mat {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #ffffff;
+  color: #6d28d9;
+  border: 2px solid #6d28d9;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.select-menu-mat:hover {
   background-color: #d8b4fe;
   transform: scale(1.05); /* Легкий фиолетовый оттенок */
 }
