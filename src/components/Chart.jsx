@@ -28,8 +28,27 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
   const getRefractiveIndex = (wavelength, material) => {
     const refractiveIndices = {
       CdTe: (λ) => 0.000193 * λ + 2.586587,
-      CdS: (λ) => 2.2 + 0.01 * λ,
-      ZnO: (λ) => 2.0 + 0.01 * λ,
+      CdS: (λ) => {
+      const x = 1240 / λ; // Перевод длины волны в энергию фотона (в эВ)
+      return (
+        0.30793402 * Math.pow(x, 4) -
+        1.946054399 * Math.pow(x, 3) +
+        4.7494465 * Math.pow(x, 2) -
+        5.02473737 * x +
+        4.30338744
+      );
+    },
+      ZnO: (λ) => {
+      const x = 1240 / λ; // Перевод длины волны в энергию фотона (в эВ)
+      return (
+        0.02006866 * Math.pow(x, 5) -
+        0.15792870 * Math.pow(x, 4) +
+        0.48200032 * Math.pow(x, 3) -
+        0.67829190 * Math.pow(x, 2) +
+        0.47221585 * x +
+        1.79461886
+      );
+    },
     };
     return refractiveIndices[material](wavelength);
   };
