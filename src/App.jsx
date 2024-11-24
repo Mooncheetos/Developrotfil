@@ -31,10 +31,12 @@ function AppContent() {
           {
             target: '.upload-page-title',
             content: 'Тут ви можете завантажити файл з даними для аналізу.',
+            disableBeacon: true,
           },
           {
             target: '.file-label',
-            content: 'Виберіть файл для завантаження, натиснувши цю кнопку.',
+            content: 'Виберіть файл для завантаження, натиснувши цю кнопку. Після завантаження оберіть бажаний спектр для аналізу.',
+            disableBeacon: true,
           },
         ];
       case "fileUploaded":
@@ -42,6 +44,7 @@ function AppContent() {
           {
             target: '.spectrum-selector',
             content: 'Натисніть тут, щоб вибрати спектр для аналізу.',
+            disableBeacon: true,
           },
         ];
       case "spectrumSelected":
@@ -49,22 +52,27 @@ function AppContent() {
           {
             target: '.select-menu-mat',
             content: 'Оберіть матеріал для розрахунку.',
+            disableBeacon: true,
           },
           {
             target: '.chart-container',
             content: 'Виберіть точки на графіку для аналізу.',
+            disableBeacon: true,
           },
           {
             target: '.input-style',
             content: 'Введіть точки вручну, якщо це необхідно.',
+            disableBeacon: true,
           },
           {
             target: '.button',
             content: 'Натисніть цю кнопку, щоб додати точку до таблиці для розрахунку.',
+            disableBeacon: true,
           },
           {
             target: '.button-rozr',
-            content: 'Після додачи всіх точок, натисніть цю кнопку, щоб розрахувати товщину.',
+            content: 'Після додачи всіх точок, натисніть цю кнопку, щоб розрахувати товщину матеріалу.',
+            disableBeacon: true,
           },
         ];
       default:
@@ -127,7 +135,10 @@ function AppContent() {
       <ReactJoyride
         key={joyrideKey}
         steps={steps}
+        disableBeacon: true
         continuous={true}
+        run={true}
+        autoStart={true}
         showProgress={true}
         showSkipButton={true}
         locale={{
@@ -138,19 +149,44 @@ function AppContent() {
           skip: 'Пропустити',
         }}
         styles={{
-          options: {
-            zIndex: 10000,
-          },
-          tooltipContainer: {
-            textAlign: 'left',
-          },
-          buttonNext: {
-            backgroundColor: '#4CAF50',
-          },
-          buttonBack: {
-            color: '#999',
-          },
-        }}
+    options: {
+      zIndex: 10000,
+      backgroundColor: '#ffffff', // Основной цвет вашего проекта (пример: фиолетовый)
+      textColor: '#6d28d9', // Цвет текста
+      primaryColor: '#ffffff', // Цвет кнопок "Далі" иd8b4fe "Завершити"
+      arrowColor: '#ffffff', // Цвет стрелки подсказки
+    },
+    tooltipContainer: {
+      backgroundColor: '#ffffff', // Цвет фона подсказки
+      borderRadius: '8px', // Закругленные углы
+      padding: '16px', // Отступы внутри подсказки
+    },
+    tooltipTitle: {
+      color: '#ffffff', // Цвет заголовка
+      fontSize: '18px', // Размер текста заголовка
+      fontWeight: 'bold', // Жирный текст
+    },
+    tooltipContent: {
+      color: '#6d28d9', // Цвет текста контента
+      fontSize: '16px', // Размер текста
+    },
+    buttonNext: {
+      backgroundColor: '#6d28d9', // Зеленый цвет кнопки "Далі"
+      color: '#ffffff',
+      borderRadius: '4px', // Закругленные углы кнопки
+      padding: '8px 12px', // Отступы в кнопке
+    },
+    buttonBack: {
+      color: '#cccccc', // Серый цвет кнопки "Назад"
+      fontSize: '14px',
+    },
+    buttonSkip: {
+      color: '#ffffff', // Цвет кнопки "Пропустити"
+      backgroundColor: '#e53e3e', // Красный фон для кнопки "Пропустити"
+      borderRadius: '4px',
+      padding: '8px 12px',
+    },
+  }}
       />
       <Header />
       <Routes>
