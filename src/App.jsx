@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import WelcomePage from './components/WelcomePage';
 import SpectrumSelector from './components/SpectrumSelector';
 import FileUpload from './components/FileUpload';
@@ -22,6 +22,11 @@ function AppContent() {
   const [currentStepSet, setCurrentStepSet] = useState("initial");
   const [joyrideKey, setJoyrideKey] = useState(0);
   const [steps, setSteps] = useState([]);
+  const stepHistory = useRef({
+    initial: false,
+    fileUploaded: false,
+    spectrumSelected: false,
+  });
 
   // Определение шагов
   const defineSteps = (stepSet) => {
@@ -80,54 +85,47 @@ function AppContent() {
     }
   };
 
-  // Обновление шагов при изменении currentStepSet
-  useEffect(() => {
-    const newSteps = defineSteps(currentStepSet);
-    setSteps(newSteps);
-    setJoyrideKey((prevKey) => prevKey + 1); // Принудительное обновление Joyride
-  }, [currentStepSet]);
-
-  // Установка начальных шагов при загрузке страницы
-  useEffect(() => {
-    if (location.pathname === "/upload") {
-      setCurrentStepSet("initial");
-      const newSteps = defineSteps("initial"); // Принудительно задаем шаги для initial
+  // Обновление шагов
+  const updateSteps = (stepSet) => {
+    if (!stepHistory.current[stepSet]) {
+      const newSteps = defineSteps(stepSet);
       setSteps(newSteps);
       setJoyrideKey((prevKey) => prevKey + 1);
+      stepHistory.current[stepSet] = true; // Запоминаем, что блок уже показан
+    }
+  };
+
+  // Отслеживание перехода на страницу /upload
+  useEffect(() => {
+    if (location.pathname === "/upload" && !stepHistory.current.initial) {
+      setCurrentStepSet("initial");
+      updateSteps("initial");
     }
   }, [location]);
 
-  // Обработчик загрузки файла
+  // Показ шагов для файла
   const handleFileData = (parsedData) => {
     setSpectra(parsedData);
     setSelectedData(null);
     setShowResetButton(false);
-    setCurrentStepSet("fileUploaded"); // Устанавливаем шаги для выбора спектра
-    const newSteps = defineSteps("fileUploaded"); // Принудительно задаем шаги для fileUploaded
-    setSteps(newSteps);
-    setJoyrideKey((prevKey) => prevKey + 1);
+    setCurrentStepSet("fileUploaded");
+    updateSteps("fileUploaded");
   };
 
-  // Обработчик выбора спектра
+  // Показ шагов для спектра
   const handleSpectrumSelect = (spectrum) => {
     setSelectedData(spectrum.data);
     setShowResetButton(true);
-    setCurrentStepSet("spectrumSelected"); // Устанавливаем шаги для работы с графиком
-    const newSteps = defineSteps("spectrumSelected"); // Принудительно задаем шаги для spectrumSelected
-    setSteps(newSteps);
-    setJoyrideKey((prevKey) => prevKey + 1);
+    setCurrentStepSet("spectrumSelected");
+    updateSteps("spectrumSelected");
   };
 
-  // Сброс данных
+  // Сброс
   const handleReset = () => {
     setSpectra([]);
     setSelectedData(null);
     setShowResetButton(false);
     setResetTrigger((prev) => !prev);
-    setCurrentStepSet("initial");
-    const newSteps = defineSteps("initial"); // Принудительно задаем шаги для initial
-    setSteps(newSteps);
-    setJoyrideKey((prevKey) => prevKey + 1);
   };
 
   return (
@@ -135,10 +133,8 @@ function AppContent() {
       <ReactJoyride
         key={joyrideKey}
         steps={steps}
-        disableBeacon: true
         continuous={true}
-        run={true}
-        autoStart={true}
+        run={steps.length > 0}
         showProgress={true}
         showSkipButton={true}
         locale={{
@@ -149,44 +145,43 @@ function AppContent() {
           skip: 'Пропустити',
         }}
         styles={{
-    options: {
-      zIndex: 10000,
-      backgroundColor: '#ffffff', // Основной цвет вашего проекта (пример: фиолетовый)
-      textColor: '#6d28d9', // Цвет текста
-      primaryColor: '#ffffff', // Цвет кнопок "Далі" иd8b4fe "Завершити"
-      arrowColor: '#ffffff', // Цвет стрелки подсказки
-    },
-    tooltipContainer: {
-      backgroundColor: '#ffffff', // Цвет фона подсказки
-      borderRadius: '8px', // Закругленные углы
-      padding: '16px', // Отступы внутри подсказки
-    },
-    tooltipTitle: {
-      color: '#ffffff', // Цвет заголовка
-      fontSize: '18px', // Размер текста заголовка
-      fontWeight: 'bold', // Жирный текст
-    },
-    tooltipContent: {
-      color: '#6d28d9', // Цвет текста контента
-      fontSize: '16px', // Размер текста
-    },
-    buttonNext: {
-      backgroundColor: '#6d28d9', // Зеленый цвет кнопки "Далі"
-      color: '#ffffff',
-      borderRadius: '4px', // Закругленные углы кнопки
-      padding: '8px 12px', // Отступы в кнопке
-    },
-    buttonBack: {
-      color: '#cccccc', // Серый цвет кнопки "Назад"
-      fontSize: '14px',
-    },
-    buttonSkip: {
-      color: '#ffffff', // Цвет кнопки "Пропустити"
-      backgroundColor: '#e53e3e', // Красный фон для кнопки "Пропустити"
-      borderRadius: '4px',
-      padding: '8px 12px',
-    },
-  }}
+          options: {
+            zIndex: 10000,
+            backgroundColor: '#ffffff',
+            textColor: '#6d28d9',
+            arrowColor: '#ffffff',
+          },
+          tooltipContainer: {
+            backgroundColor: '#ffffff',
+            borderRadius: '8px',
+            padding: '16px',
+          },
+          tooltipTitle: {
+            color: '#ffffff',
+            fontSize: '18px',
+            fontWeight: 'bold',
+          },
+          tooltipContent: {
+            color: '#6d28d9',
+            fontSize: '16px',
+          },
+          buttonNext: {
+            backgroundColor: '#6d28d9',
+            color: '#ffffff',
+            borderRadius: '4px',
+            padding: '8px 12px',
+          },
+          buttonBack: {
+            color: '#cccccc',
+            fontSize: '14px',
+          },
+          buttonSkip: {
+            color: '#ffffff',
+            backgroundColor: '#e53e3e',
+            borderRadius: '4px',
+            padding: '8px 12px',
+          },
+        }}
       />
       <Header />
       <Routes>
