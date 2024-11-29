@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useAppContext } from '../AppContext';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import '../styles/Chart.css';
 import "../styles/Buttons.css";
@@ -20,7 +21,7 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 function Chart({ data, selectedMaterial, setSelectedMaterial }) {
   const chartRef = useRef(null);
-  const [selectedPoints, setSelectedPoints] = useState([]);
+  const { selectedPoints, setSelectedPoints } = useAppContext();
   const [manualPoint, setManualPoint] = useState('');
   const [averageThickness, setAverageThickness] = useState(null);
 
@@ -111,7 +112,11 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
     const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
     if (points.length > 0) {
       const { index } = points[0]; // Получаем индекс ближайшей точки
-      addPoint(data[index]); // Добавляем точку в таблицу
+      const clickedPoint = data[index]; // Добавляем точку в таблицу
+      setSelectedPoints((prevPoints) => {
+        if (prevPoints.length >= 2) return [clickedPoint]; // Перезаписываем после 2 точек
+        return [...prevPoints, clickedPoint];
+      });
     }
   };
 

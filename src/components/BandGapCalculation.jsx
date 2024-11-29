@@ -1,73 +1,135 @@
-// src/components/BandGapCalculation.jsx
-import { useState, useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { AppContext } from '../AppContext';
+import { useMemo } from 'react';
+import { useAppContext } from '../AppContext';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-function BandGapCalculation({ spectra }) {
-  const { thickness, selectedSpectrum } = useContext(AppContext); // Используем сохраненные спектр и толщину
-  const [bandGapWidth, setBandGapWidth] = useState(null);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-  const PLANCK_CONSTANT = 4.135667696e-15; // Планка (h) в эВ·с
-  const SPEED_OF_LIGHT = 3e8; // Скорость света в м/с
-  const REFLECTION_COEFFICIENT = 0.2; // Условное значение R, если нет точного значения
+function BandGapCalculation() {
+  const { selectedPoints, reflection, setReflection } = useAppContext();
 
-  useEffect(() => {
-    if (selectedSpectrum) calculateBandGapWidth(selectedSpectrum.data); // Вызываем расчет при загрузке страницы
-  }, [selectedSpectrum, thickness]);
+  // Проверка валидности входных данных
+  const isValidInput = useMemo(() => {
+    return (
+      selectedPoints.length === 2 &&
+      reflection &&
+      reflection > 0 &&
+      reflection < 1
+    );
+  }, [selectedPoints, reflection]);
 
-  const calculateBandGapWidth = (spectrumData) => {
-    if (!thickness || !spectrumData) return;
+  // Расчеты для графика
+  const calculatedData = useMemo(() => {
+    if (!isValidInput) return [];
 
-    const bandGapData = spectrumData
-      .filter((data) => data.wavelength >= 750 && data.wavelength <= 850) // Ограничение по длинам волн
-      .map((data) => {
-        const wavelength = data.wavelength * 1e-9; // Перевод длины волны в метры
-        const transmissionCoefficient = data.coefficient / 100; // Пропускание T
-        const alpha = -Math.log(transmissionCoefficient / (1 - REFLECTION_COEFFICIENT)) / thickness; // Расчет α
+    const [point1, point2] = selectedPoints;
+    const wavelengthRange = [];
+    const step = (point2.wavelength - point1.wavelength) / 100; // Разбиение на 100 точек
 
-        // Энергия (hν) и значение (α·hν)^2
-        const energy = (PLANCK_CONSTANT * SPEED_OF_LIGHT) / wavelength; // hν, энергия в эВ
-        const alphaEnergySquared = Math.pow(alpha * energy, 2);
+    for (let λ = point1.wavelength; λ <= point2.wavelength; λ += step) {
+      const T = point1.coefficient / 100; // Пропускание переводим в доли
+      const alpha = Math.log((1 - reflection) / T);
+      const hv = 1240 / λ; // Энергия фотона
+      const hvAlphaSquared = Math.pow(hv * alpha, 2);
 
-        return { energy, alphaEnergySquared };
+      wavelengthRange.push({
+        wavelength: λ,
+        hv,
+        hvAlphaSquared,
       });
+    }
 
-    // Найти линейную область для экстраполяции
-    const linearData = bandGapData.slice(0, 10); // Берем первые 10 точек для упрощения
+    return wavelengthRange;
+  }, [isValidInput, selectedPoints, reflection]);
 
-    // Выполним линейную экстраполяцию
-    const n = linearData.length;
-    const sumX = linearData.reduce((acc, point) => acc + point.energy, 0);
-    const sumY = linearData.reduce((acc, point) => acc + point.alphaEnergySquared, 0);
-    const sumXY = linearData.reduce((acc, point) => acc + point.energy * point.alphaEnergySquared, 0);
-    const sumX2 = linearData.reduce((acc, point) => acc + point.energy * point.energy, 0);
+  // Данные для построения графика
+  const chartData = useMemo(() => {
+    if (!calculatedData.length) return null;
 
-    // Уравнение линейной регрессии y = mx + b
-    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-    const intercept = (sumY - slope * sumX) / n;
+    return {
+      labels: calculatedData.map((d) => d.hv.toFixed(2)), // Энергия фотона
+      datasets: [
+        {
+          label: '(hv * α)^2',
+          data: calculatedData.map((d) => d.hvAlphaSquared),
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
+        },
+      ],
+    };
+  }, [calculatedData]);
 
-    // Пересечение с осью энергии (y=0): x = -b / m
-    const bandGap = -intercept / slope;
-    setBandGapWidth(bandGap);
+  // Настройки графика
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'hv (eV)',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: '(hv * α)^2',
+        },
+      },
+    },
   };
 
   return (
-    <div className="bandgap-calculation">
-      <h2>Расчеты ширины запрещенной зоны</h2>
-      <p>Толщина слоя: {thickness ? `${thickness.toFixed(2)} нм` : "Необходимо рассчитать толщину на предыдущей странице"}</p>
+    <div className="bandgap-container">
+      <h1>Розрахунок ширини забороненої зони</h1>
+      <div className="reflection-input">
+        <label htmlFor="reflection">
+          Середнє значення віддзеркалення (R):
+        </label>
+        <input
+          type="number"
+          id="reflection"
+          value={reflection}
+          step="0.01"
+          min="0"
+          max="1"
+          onChange={(e) => setReflection(Number(e.target.value))} // Обновляем значение R
+        />
+      </div>
 
-      {bandGapWidth !== null && (
-        <>
-          <h3>Ширина запрещенной зоны</h3>
-          <p>Значение: {bandGapWidth.toFixed(2)} эВ</p>
-        </>
+      <div className="selected-points">
+        <h2>Вибрані точки:</h2>
+        {selectedPoints.length > 0 ? (
+          <ul>
+            {selectedPoints.map((point, idx) => (
+              <li key={idx}>
+                Довжина хвилі: {point.wavelength} нм, Пропускання: {point.coefficient}%
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Точки для аналізу ще не вибрано.</p>
+        )}
+      </div>
+
+      {calculatedData.length > 0 && (
+        <div className="chart-container">
+          <Line data={chartData} options={chartOptions} />
+        </div>
       )}
+
+      {!isValidInput && <p>Для розрахунків потрібно вибрати 2 точки та вказати значення R.</p>}
     </div>
   );
 }
-
-BandGapCalculation.propTypes = {
-  spectra: PropTypes.array.isRequired,
-};
 
 export default BandGapCalculation;
