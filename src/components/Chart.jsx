@@ -1,5 +1,6 @@
 import { Line } from 'react-chartjs-2';
 import { useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Chart as ChartJS,
@@ -24,6 +25,8 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
   const { selectedPoints, setSelectedPoints } = useAppContext();
   const [manualPoint, setManualPoint] = useState('');
   const [averageThickness, setAverageThickness] = useState(null);
+
+  const location = useLocation();
 
   // Коэффициент преломления для материалов
   const getRefractiveIndex = (wavelength, material) => {
@@ -114,7 +117,13 @@ function Chart({ data, selectedMaterial, setSelectedMaterial }) {
       const { index } = points[0]; // Получаем индекс ближайшей точки
       const clickedPoint = data[index]; // Добавляем точку в таблицу
       setSelectedPoints((prevPoints) => {
-        if (prevPoints.length >= 2) return [clickedPoint]; // Перезаписываем после 2 точек
+        if (location.pathname === '/bandgap') {
+          // Ограничение до 2 точек для страницы bandgap
+          if (prevPoints.length >= 2) return [clickedPoint];
+          return [...prevPoints, clickedPoint];
+        }
+        // На странице upload можно добавлять неограниченное количество точек
+        if (prevPoints.some((p) => p.wavelength === clickedPoint.wavelength)) return prevPoints;
         return [...prevPoints, clickedPoint];
       });
     }

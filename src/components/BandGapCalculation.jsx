@@ -1,135 +1,193 @@
-import { useMemo } from 'react';
-import { useAppContext } from '../AppContext';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { useState } from "react";
+import { Line } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
+import { useAppContext } from "../AppContext";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+Chart.register(...registerables);
 
 function BandGapCalculation() {
-  const { selectedPoints, reflection, setReflection } = useAppContext();
+  const { selectedPoints } = useAppContext(); // Получаем выбранные точки
+  const [reflection, setReflection] = useState(0.1); // Значение R
+  const [graphData, setGraphData] = useState(null);
+  const [customLine, setCustomLine] = useState(null); // Хранение пользовательской линии
 
-  // Проверка валидности входных данных
-  const isValidInput = useMemo(() => {
-    return (
-      selectedPoints.length === 2 &&
-      reflection &&
-      reflection > 0 &&
-      reflection < 1
-    );
-  }, [selectedPoints, reflection]);
-
-  // Расчеты для графика
-  const calculatedData = useMemo(() => {
-    if (!isValidInput) return [];
-
-    const [point1, point2] = selectedPoints;
-    const wavelengthRange = [];
-    const step = (point2.wavelength - point1.wavelength) / 100; // Разбиение на 100 точек
-
-    for (let λ = point1.wavelength; λ <= point2.wavelength; λ += step) {
-      const T = point1.coefficient / 100; // Пропускание переводим в доли
-      const alpha = Math.log((1 - reflection) / T);
-      const hv = 1240 / λ; // Энергия фотона
-      const hvAlphaSquared = Math.pow(hv * alpha, 2);
-
-      wavelengthRange.push({
-        wavelength: λ,
-        hv,
-        hvAlphaSquared,
-      });
+  // Расчет данных для графика
+  const calculateBandGapData = () => {
+    if (selectedPoints.length < 2 || reflection <= 0 || reflection >= 1) {
+      alert("Выберите минимум 2 точки и задайте R в диапазоне от 0 до 1.");
+      return;
     }
 
-    return wavelengthRange;
-  }, [isValidInput, selectedPoints, reflection]);
+    const [point1, point2] = selectedPoints;
+    const wavelengthRange = generateWavelengthRange(
+      point1.wavelength,
+      point2.wavelength
+    );
 
-  // Данные для построения графика
-  const chartData = useMemo(() => {
-    if (!calculatedData.length) return null;
+    const results = wavelengthRange.map((wavelength) => {
+      const transmittance = interpolateTransmittance(point1, point2, wavelength);
+      const alpha = calculateAlpha(reflection, transmittance);
+      const hv = calculateHv(wavelength);
+      const squareHvAlpha = calculateSquareHvAlpha(hv, alpha);
 
-    return {
-      labels: calculatedData.map((d) => d.hv.toFixed(2)), // Энергия фотона
+      return { hv, squareHvAlpha };
+    });
+
+    const sortedResults = results.sort((a, b) => a.hv - b.hv);
+
+    const chartData = {
+      labels: sortedResults.map((res) => res.hv.toFixed(2)),
       datasets: [
         {
-          label: '(hv * α)^2',
-          data: calculatedData.map((d) => d.hvAlphaSquared),
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1,
+          label: "(hv*α)^2 от hv",
+          data: sortedResults.map((res) => res.squareHvAlpha),
+          borderColor: "rgba(75,192,192,1)",
+          backgroundColor: "rgba(75,192,192,0.4)",
+          borderWidth: 2,
+          pointRadius: 3,
         },
       ],
     };
-  }, [calculatedData]);
 
-  // Настройки графика
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'hv (eV)',
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: '(hv * α)^2',
-        },
-      },
-    },
+    setGraphData(chartData);
+  };
+
+  // Функция для добавления пользовательской линии
+  const handleAddLine = () => {
+    if (selectedPoints.length < 2) {
+      alert("Выберите минимум 2 точки, чтобы провести линию.");
+      return;
+    }
+
+    const [p1, p2] = selectedPoints;
+    const slope = (p2.coefficient - p1.coefficient) / (p2.wavelength - p1.wavelength);
+    const intercept = p1.coefficient - slope * p1.wavelength;
+
+    const xStart = Math.min(p1.wavelength, p2.wavelength);
+    const xEnd = Math.max(p1.wavelength, p2.wavelength);
+
+    setCustomLine({
+      slope,
+      intercept,
+      xStart,
+      xEnd,
+    });
   };
 
   return (
-    <div className="bandgap-container">
+    <div style={{ padding: "20px" }}>
       <h1>Розрахунок ширини забороненої зони</h1>
-      <div className="reflection-input">
-        <label htmlFor="reflection">
-          Середнє значення віддзеркалення (R):
+      <div>
+        <label>
+          Введіть середнє значення віддзеркалення (R):{" "}
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            max="1"
+            value={reflection}
+            onChange={(e) => setReflection(parseFloat(e.target.value))}
+            style={{ marginLeft: "10px", padding: "5px" }}
+          />
         </label>
-        <input
-          type="number"
-          id="reflection"
-          value={reflection}
-          step="0.01"
-          min="0"
-          max="1"
-          onChange={(e) => setReflection(Number(e.target.value))} // Обновляем значение R
-        />
-      </div>
-
-      <div className="selected-points">
-        <h2>Вибрані точки:</h2>
+        <h3>Обрані точки:</h3>
         {selectedPoints.length > 0 ? (
-          <ul>
-            {selectedPoints.map((point, idx) => (
-              <li key={idx}>
-                Довжина хвилі: {point.wavelength} нм, Пропускання: {point.coefficient}%
-              </li>
-            ))}
-          </ul>
+          selectedPoints.map((point, index) => (
+            <p key={index}>
+              Довжина хвилі: <strong>{point.wavelength} нм</strong>, Пропускання:{" "}
+              <strong>{point.coefficient}%</strong>
+            </p>
+          ))
         ) : (
-          <p>Точки для аналізу ще не вибрано.</p>
+          <p>Точки не вибрано.</p>
+        )}
+        <button onClick={calculateBandGapData} style={buttonStyle}>
+          Розрахувати та побудувати графік
+        </button>
+        <button onClick={handleAddLine} style={{ ...buttonStyle, marginLeft: "10px" }}>
+          Додати лінію
+        </button>
+        {graphData && (
+          <div style={{ marginTop: "30px" }}>
+            <Line
+              data={graphData}
+              options={{
+                responsive: true,
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: "hv (еВ)",
+                    },
+                  },
+                  y: {
+                    title: {
+                      display: true,
+                      text: "(hv*α)^2",
+                    },
+                  },
+                },
+                plugins: {
+                  annotation: {
+                    annotations: customLine
+                      ? [
+                          {
+                            type: "line",
+                            scaleID: "x",
+                            value: customLine.xStart,
+                            endValue: customLine.xEnd,
+                            borderColor: "red",
+                            borderWidth: 2,
+                          },
+                        ]
+                      : [],
+                  },
+                },
+              }}
+            />
+          </div>
         )}
       </div>
-
-      {calculatedData.length > 0 && (
-        <div className="chart-container">
-          <Line data={chartData} options={chartOptions} />
-        </div>
-      )}
-
-      {!isValidInput && <p>Для розрахунків потрібно вибрати 2 точки та вказати значення R.</p>}
     </div>
   );
 }
+
+// Дополнительные стили для кнопки
+const buttonStyle = {
+  padding: '10px 20px',
+  backgroundColor: '#4CAF50',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  fontSize: '16px',
+};
+
+// Генерация диапазона длин волн
+const generateWavelengthRange = (min, max) => {
+  const step = (max - min) / 100; // Генерация 100 точек для точности
+  return Array.from({ length: 100 }, (_, i) => min + i * step);
+};
+
+// Интерполяция пропускания
+const interpolateTransmittance = (point1, point2, wavelength) => {
+  const slope = (point2.coefficient - point1.coefficient) / (point2.wavelength - point1.wavelength);
+  return (point1.coefficient + slope * (wavelength - point1.wavelength)) / 100;
+};
+
+// Расчет α = ln((1 - R) / T)
+const calculateAlpha = (reflection, transmittance) => {
+  if (transmittance <= 0) {
+    console.error("T должно быть больше 0 для расчета ln.");
+    return null;
+  }
+  return Math.log((1 - reflection) / transmittance);
+};
+
+// Расчет hv = 1240 / λ
+const calculateHv = (wavelength) => 1240 / wavelength;
+
+// Расчет (hv * α)^2
+const calculateSquareHvAlpha = (hv, alpha) => Math.pow(hv * alpha, 2);
 
 export default BandGapCalculation;
