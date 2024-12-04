@@ -79,8 +79,35 @@ function AppContent() {
             content: 'Після додачи всіх точок, натисніть цю кнопку, щоб розрахувати товщину матеріалу.',
             disableBeacon: true,
           },
+          {
+            target: '.button-rozr',
+            content: 'А щоб перейти до розрахунку забороненої зони, треба вибрати дві точки на графіку - початок підйому графіку (закінчення повного поглинання на спектрі пропускання плівки) та кінець підйому (початок пропускання плівкою світла)',
+            disableBeacon: true,
+          },
         ];
-      
+      case "bandgap":
+      return [
+        {
+          target: '.bandgap-container h1',
+          content: 'Це сторінка для розрахунку ширини забороненої зони.',
+          disableBeacon: true,
+        },
+        {
+          target: '.select-menu-mat',
+          content: 'Введіть середнє значення віддзеркалення тут для подальшого розрахунку.',
+          disableBeacon: true,
+        },
+        {
+          target: '.select-menu',
+          content: 'Натисніть цю кнопку, щоб розрахувати ширину забороненої зони та побудувати графік.',
+          disableBeacon: true,
+        },        
+        {
+          target: '.select-menu',
+          content: 'Використовуйте кліки для побудови лінії на графіку. Один клік - одна точка, а другий клік будує лінію між точками графіку',
+          disableBeacon: true,
+        },
+      ];
       default:
         return [];
     }
@@ -101,6 +128,9 @@ function AppContent() {
     if (location.pathname === "/upload" && !stepHistory.current.initial) {
       setCurrentStepSet("initial");
       updateSteps("initial");
+    } else if (location.pathname === "/bandgap" && !stepHistory.current.bandgap) {
+      setCurrentStepSet("bandgap");
+      updateSteps("bandgap");
     }
   }, [location]);
 
