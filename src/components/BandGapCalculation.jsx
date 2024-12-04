@@ -1,17 +1,20 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { Stage, Layer, Line as KonvaLine } from "react-konva";
 import { useAppContext } from "../AppContext";
 
 Chart.register(...registerables);
 
 function BandGapCalculation() {
-  const { selectedPoints } = useAppContext(); // Получаем выбранные точки
-  const [reflection, setReflection] = useState(0.1); // Значение R
+  const { selectedPoints } = useAppContext();
+  const [reflection, setReflection] = useState(0.1);
   const [graphData, setGraphData] = useState(null);
-  const [customLine, setCustomLine] = useState(null); // Хранение пользовательской линии
+  const [linePoints, setLinePoints] = useState([]); // Точки линии
+  const chartContainerRef = useRef(null); // Ссылка на контейнер графика
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 }); // Размеры холста
 
-  // Расчет данных для графика
+  // Расчёт данных для графика
   const calculateBandGapData = () => {
     if (selectedPoints.length < 2 || reflection <= 0 || reflection >= 1) {
       alert("Выберите минимум 2 точки и задайте R в диапазоне от 0 до 1.");
@@ -52,30 +55,28 @@ function BandGapCalculation() {
     setGraphData(chartData);
   };
 
-  // Функция для добавления пользовательской линии
-  const handleAddLine = () => {
-    if (selectedPoints.length < 2) {
-      alert("Выберите минимум 2 точки, чтобы провести линию.");
-      return;
+  // Добавление точки на клик
+  const handleCanvasClick = (e) => {
+    const stage = e.target.getStage();
+    const pointerPosition = stage.getPointerPosition();
+
+    if (linePoints.length < 4) {
+      setLinePoints([...linePoints, pointerPosition.x, pointerPosition.y]);
+    } else {
+      alert("Вы уже нарисовали линию. Для изменения обновите страницу.");
     }
-
-    const [p1, p2] = selectedPoints;
-    const slope = (p2.coefficient - p1.coefficient) / (p2.wavelength - p1.wavelength);
-    const intercept = p1.coefficient - slope * p1.wavelength;
-
-    const xStart = Math.min(p1.wavelength, p2.wavelength);
-    const xEnd = Math.max(p1.wavelength, p2.wavelength);
-
-    setCustomLine({
-      slope,
-      intercept,
-      xStart,
-      xEnd,
-    });
   };
 
+  // Подгон размеров холста под размеры графика
+  useEffect(() => {
+    if (chartContainerRef.current) {
+      const { offsetWidth, offsetHeight } = chartContainerRef.current;
+      setCanvasSize({ width: offsetWidth, height: offsetHeight });
+    }
+  }, [graphData]);
+
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ position: "relative", padding: "20px" }}>
       <h1>Розрахунок ширини забороненої зони</h1>
       <div>
         <label>
@@ -99,54 +100,68 @@ function BandGapCalculation() {
             </p>
           ))
         ) : (
-          <p>Точки не вибрано.</p>
+          <p>Точки не выбрано.</p>
         )}
         <button onClick={calculateBandGapData} style={buttonStyle}>
           Розрахувати та побудувати графік
         </button>
-        <button onClick={handleAddLine} style={{ ...buttonStyle, marginLeft: "10px" }}>
-          Додати лінію
-        </button>
-        {graphData && (
-          <div style={{ marginTop: "30px" }}>
-            <Line
-              data={graphData}
-              options={{
-                responsive: true,
-                scales: {
-                  x: {
-                    title: {
-                      display: true,
-                      text: "hv (еВ)",
+        <div
+          ref={chartContainerRef}
+          style={{
+            marginTop: "30px",
+            position: "relative",
+            width: "800px",
+            height: "500px",
+          }}
+        >
+          {graphData && (
+            <>
+              <Line
+                data={graphData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: "hv (еВ)",
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: "(hv*α)^2",
+                      },
                     },
                   },
-                  y: {
-                    title: {
-                      display: true,
-                      text: "(hv*α)^2",
-                    },
-                  },
-                },
-                plugins: {
-                  annotation: {
-                    annotations: customLine
-                      ? [
-                          {
-                            type: "line",
-                            scaleID: "x",
-                            value: customLine.xStart,
-                            endValue: customLine.xEnd,
-                            borderColor: "red",
-                            borderWidth: 2,
-                          },
-                        ]
-                      : [],
-                  },
-                },
-              }}
-            />
-          </div>
-        )}
+                }}
+              />
+              <Stage
+                width={canvasSize.width}
+                height={canvasSize.height}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  zIndex: 2,
+                }}
+                onClick={handleCanvasClick}
+              >
+                <Layer>
+                  {linePoints.length === 4 && (
+                    <KonvaLine
+                      points={linePoints}
+                      stroke="red"
+                      strokeWidth={2}
+                      lineCap="round"
+                    />
+                  )}
+                </Layer>
+              </Stage>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -154,18 +169,18 @@ function BandGapCalculation() {
 
 // Дополнительные стили для кнопки
 const buttonStyle = {
-  padding: '10px 20px',
-  backgroundColor: '#4CAF50',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  fontSize: '16px',
+  padding: "10px 20px",
+  backgroundColor: "#4CAF50",
+  color: "#fff",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
+  fontSize: "16px",
 };
 
 // Генерация диапазона длин волн
 const generateWavelengthRange = (min, max) => {
-  const step = (max - min) / 100; // Генерация 100 точек для точности
+  const step = (max - min) / 100;
   return Array.from({ length: 100 }, (_, i) => min + i * step);
 };
 
@@ -175,7 +190,7 @@ const interpolateTransmittance = (point1, point2, wavelength) => {
   return (point1.coefficient + slope * (wavelength - point1.wavelength)) / 100;
 };
 
-// Расчет α = ln((1 - R) / T)
+// Расчёт α = ln((1 - R) / T)
 const calculateAlpha = (reflection, transmittance) => {
   if (transmittance <= 0) {
     console.error("T должно быть больше 0 для расчета ln.");
@@ -184,10 +199,10 @@ const calculateAlpha = (reflection, transmittance) => {
   return Math.log((1 - reflection) / transmittance);
 };
 
-// Расчет hv = 1240 / λ
+// Расчёт hv = 1240 / λ
 const calculateHv = (wavelength) => 1240 / wavelength;
 
-// Расчет (hv * α)^2
+// Расчёт (hv * α)^2
 const calculateSquareHvAlpha = (hv, alpha) => Math.pow(hv * alpha, 2);
 
 export default BandGapCalculation;
