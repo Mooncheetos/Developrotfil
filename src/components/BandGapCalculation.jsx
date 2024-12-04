@@ -3,6 +3,8 @@ import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { Stage, Layer, Line as KonvaLine } from "react-konva";
 import { useAppContext } from "../AppContext";
+import "../styles/buttons.css"; // Подключение файла стилей для кнопок
+import "../styles/BandGapCalculation.css";
 
 Chart.register(...registerables);
 
@@ -76,7 +78,7 @@ function BandGapCalculation() {
   }, [graphData]);
 
   return (
-    <div style={{ position: "relative", padding: "20px" }}>
+    <div className="bandgap-container">
       <h1>Розрахунок ширини забороненої зони</h1>
       <div>
         <label>
@@ -88,7 +90,7 @@ function BandGapCalculation() {
             max="1"
             value={reflection}
             onChange={(e) => setReflection(parseFloat(e.target.value))}
-            style={{ marginLeft: "10px", padding: "5px" }}
+            className="select-menu-mat"
           />
         </label>
         <h3>Обрані точки:</h3>
@@ -102,7 +104,7 @@ function BandGapCalculation() {
         ) : (
           <p>Точки не выбрано.</p>
         )}
-        <button onClick={calculateBandGapData} style={buttonStyle}>
+        <button onClick={calculateBandGapData} className="select-menu">
           Розрахувати та побудувати графік
         </button>
         <div
@@ -167,16 +169,6 @@ function BandGapCalculation() {
   );
 }
 
-// Дополнительные стили для кнопки
-const buttonStyle = {
-  padding: "10px 20px",
-  backgroundColor: "#4CAF50",
-  color: "#fff",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-  fontSize: "16px",
-};
 
 // Генерация диапазона длин волн
 const generateWavelengthRange = (min, max) => {

@@ -80,6 +80,7 @@ function AppContent() {
             disableBeacon: true,
           },
         ];
+      
       default:
         return [];
     }
