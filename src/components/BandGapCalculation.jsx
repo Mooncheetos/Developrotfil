@@ -3,7 +3,7 @@ import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { Stage, Layer, Line as KonvaLine } from "react-konva";
 import { useAppContext } from "../AppContext";
-import "../styles/buttons.css"; // Подключение файла стилей для кнопок
+// import "../styles/buttons.css"; // Подключение файла стилей для кнопок
 import "../styles/BandGapCalculation.css";
 
 Chart.register(...registerables);
