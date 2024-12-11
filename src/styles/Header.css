@@ -24,20 +24,31 @@
 
 .nav {
   display: flex;
-  gap: 1rem;
+  align-items: center; /* Вирівнюємо всі елементи по вертикалі */
+  gap: 0.5rem; /* Відстань між елементами */
 }
 
 .nav-link {
-  color: #a78bfa;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s;
+  background-color: #ffffff; /* Белый фон */
+  color: #6d28d9; /* Фиолетовый текст */
+  padding: 0.75rem 1.5rem; /* Отступы */
+  border: none; /* Без границ */
+  border-radius: 9999px; /* Закругленные края */
+  text-decoration: none; /* Убираем подчеркивание */
+  font-size: 1rem; /* Размер текста */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #ffffff;
+  background-color: #d8b4fe; /* Светло-фиолетовый фон на ховере */
+  transform: scale(1.05); /* Легкое увеличение */
 }
 
 .nav-divider {
-  color: #ffffff;
+  display: inline-block; /* Залишаємо як inline-block */
+  color: #ffffff; /* Колір роздільника */
+  font-size: 1.5rem; /* Збільшуємо розмір, щоб відповідати розміру кнопок */
+  margin: 0 0.5rem; /* Додаємо відступи з боків */
+  line-height: 1; /* Вирівнюємо по центру текстової лінії */
 }
